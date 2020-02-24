@@ -16,26 +16,32 @@ class CustomListWidget(QtWidgets.QListWidget):
             self.showContext)
 
     def dropEvent(self, event):
-        title = self.item(0)
+        row = self.currentRow()
+        print(row)
         # scan list before dropped
-        before = [self.item(i).text() for i in range(1, self.count())]
+        before = [self.item(i).text() for i in range(self.count())]
         super(CustomListWidget, self).dropEvent(event)
+        print(self.currentRow())
         # scan list after dropped
-        after = [self.item(i).text() for i in range(1, self.count())]
+        after = [self.item(i).text() for i in range(self.count())]
         # find difference
-        if title.text() in after:
-            diff = [self.item(0).text()]
-        else:
-            diff = [a for a in after if a not in before]
-        if not diff:
-            return
-        # re-arrange list
-        for i in range(0, self.count()):
-            if self.item(i).text() == diff[0]:
-                temp = self.takeItem(i)
-                temp.setBackground(brush_back_default)
-                temp.setForeground(brush_fore_default)
-                self.addItem(temp)
+        i = 0
+        while i < len(before):
+            if before[i] == after[i]:
+                i += 1
+                continue
+            else:
+                if sorted(before) != sorted(after):
+                    # drag&drop in different list, add to bottom
+                    temp = self.takeItem(i)
+                    temp.setBackground(brush_back_default)
+                    temp.setForeground(brush_fore_default)
+                    self.addItem(temp)
+                elif i == 0:  
+                    # drag&drop in same list, drop to top
+                    temp = self.takeItem(i)
+                    self.insertItem(row, temp)
+                break
 
     def enterEvent(self, event):  # clears all selections to beautify
         super(CustomListWidget, self).enterEvent(event)
@@ -43,7 +49,7 @@ class CustomListWidget(QtWidgets.QListWidget):
 
     def showContext(self, pos):
         row = self.row(self.itemAt(pos))
-        if row <= 0:
+        if row <= 0:  # clicked on title
             return
         popMenu = QtWidgets.QMenu(self)
         resetAction = QtWidgets.QAction("Reset")
@@ -58,12 +64,6 @@ class CustomListWidget(QtWidgets.QListWidget):
             self.parent().parent().addFlight(item.text())  # my grandparent is MainWindow
         elif action == deleteAction:
             item = self.takeItem(row)
-
-    def resetItem(self, action):
-        print(action.data())
-
-    def deleteItem(self, action):
-        print(action.data())
 
 
 class CustomLineEdit(QtWidgets.QLineEdit):

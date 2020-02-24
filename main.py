@@ -33,18 +33,21 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         # initialize window and widgets
         self.setFixedWidth(371)
-        self.setMinimumHeight(141)
+        self.setMinimumHeight(167)
         # self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         self.setupLists()
         self.exists = []
 
     def resizeEvent(self, event):  # overload resize
-        height = self.height()-60
+        height = self.height()-86
         self.list_pend.setFixedHeight(height)
         self.list_push.setFixedHeight(height)
         self.list_dept.setFixedHeight(height)
 
     # custom functions below
+    def clickMenu(self):
+        pass
+
     def setupLists(self):
         item_title = QtWidgets.QListWidgetItem()
         item_title.setBackground(brush_back_title)

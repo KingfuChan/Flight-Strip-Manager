@@ -6,15 +6,9 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>645</width>
-    <height>601</height>
+    <width>745</width>
+    <height>662</height>
    </rect>
-  </property>
-  <property name="sizePolicy">
-   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-    <horstretch>0</horstretch>
-    <verstretch>0</verstretch>
-   </sizepolicy>
   </property>
   <property name="font">
    <font>
@@ -24,9 +18,6 @@
   </property>
   <property name="windowTitle">
    <string>Flight Strip Manager</string>
-  </property>
-  <property name="windowOpacity">
-   <double>50.000000000000000</double>
   </property>
   <property name="locale">
    <locale language="English" country="UnitedStates"/>
@@ -79,8 +70,12 @@
     </property>
     <property name="font">
      <font>
+      <family>Calibri</family>
       <pointsize>10</pointsize>
      </font>
+    </property>
+    <property name="contextMenuPolicy">
+     <enum>Qt::CustomContextMenu</enum>
     </property>
     <property name="dragEnabled">
      <bool>true</bool>
@@ -106,8 +101,12 @@
     </property>
     <property name="font">
      <font>
+      <family>Calibri</family>
       <pointsize>10</pointsize>
      </font>
+    </property>
+    <property name="contextMenuPolicy">
+     <enum>Qt::CustomContextMenu</enum>
     </property>
     <property name="dragEnabled">
      <bool>true</bool>
@@ -133,8 +132,12 @@
     </property>
     <property name="font">
      <font>
+      <family>Calibri</family>
       <pointsize>10</pointsize>
      </font>
+    </property>
+    <property name="contextMenuPolicy">
+     <enum>Qt::CustomContextMenu</enum>
     </property>
     <property name="dragEnabled">
      <bool>true</bool>
@@ -174,6 +177,79 @@
     </property>
    </widget>
   </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>745</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuSettings">
+    <property name="title">
+     <string>Menu</string>
+    </property>
+    <addaction name="actionSet_opacity"/>
+    <addaction name="actionStay_on_top"/>
+    <addaction name="separator"/>
+    <addaction name="actionFlight_handled"/>
+    <addaction name="actionFlights_departed_2"/>
+    <addaction name="separator"/>
+    <addaction name="actionAbout"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <addaction name="menuSettings"/>
+  </widget>
+  <action name="actionSet_opacity">
+   <property name="text">
+    <string>Set opacity</string>
+   </property>
+  </action>
+  <action name="actionStay_on_top">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Stay on top</string>
+   </property>
+  </action>
+  <action name="actionFlights_handled">
+   <property name="text">
+    <string>Flights handled</string>
+   </property>
+  </action>
+  <action name="actionFlights_departed">
+   <property name="text">
+    <string>Flights departed</string>
+   </property>
+  </action>
+  <action name="actionInfo">
+   <property name="text">
+    <string>Info</string>
+   </property>
+  </action>
+  <action name="actionFlight_handled">
+   <property name="text">
+    <string>Flights handled</string>
+   </property>
+  </action>
+  <action name="actionFlights_departed_2">
+   <property name="text">
+    <string>Flights departed</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
  </widget>
  <tabstops>
   <tabstop>lineEdit</tabstop>
@@ -193,7 +269,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>188</x>
-     <y>21</y>
+     <y>47</y>
     </hint>
     <hint type="destinationlabel">
      <x>427</x>
@@ -209,7 +285,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>309</x>
-     <y>25</y>
+     <y>51</y>
     </hint>
     <hint type="destinationlabel">
      <x>427</x>
@@ -225,11 +301,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>47</x>
-     <y>23</y>
+     <y>49</y>
     </hint>
     <hint type="destinationlabel">
      <x>185</x>
-     <y>25</y>
+     <y>51</y>
     </hint>
    </hints>
   </connection>
@@ -281,11 +357,28 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>menuBar</sender>
+   <signal>triggered(QAction*)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>clickMenu()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>39</x>
+     <y>11</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>428</x>
+     <y>104</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>addFlight()</slot>
   <slot>resetLists()</slot>
   <slot>setStatusClr()</slot>
   <slot>setStatusDep()</slot>
+  <slot>clickMenu()</slot>
  </slots>
 </ui>
