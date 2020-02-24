@@ -12,6 +12,8 @@ brush_fore_default.setStyle(QtCore.Qt.NoBrush)
 class CustomListWidget(QtWidgets.QListWidget):
     def __init__(self, parent=None):
         super(CustomListWidget, self).__init__(parent)
+        self.customContextMenuRequested[QtCore.QPoint].connect(
+            self.showContext)
 
     def dropEvent(self, event):
         title = self.item(0)
@@ -38,6 +40,30 @@ class CustomListWidget(QtWidgets.QListWidget):
     def enterEvent(self, event):  # clears all selections to beautify
         super(CustomListWidget, self).enterEvent(event)
         self.clearSelection()
+
+    def showContext(self, pos):
+        row = self.row(self.itemAt(pos))
+        if row <= 0:
+            return
+        popMenu = QtWidgets.QMenu(self)
+        resetAction = QtWidgets.QAction("Reset")
+        deleteAction = QtWidgets.QAction("Delete")
+        popMenu.addAction(resetAction)
+        popMenu.addAction(deleteAction)
+        action = popMenu.exec_(QtGui.QCursor.pos())
+
+        # when clicked on the menu
+        if action == resetAction:
+            item = self.takeItem(row)
+            self.parent().parent().addFlight(item.text())  # my grandparent is MainWindow
+        elif action == deleteAction:
+            item = self.takeItem(row)
+
+    def resetItem(self, action):
+        print(action.data())
+
+    def deleteItem(self, action):
+        print(action.data())
 
 
 class CustomLineEdit(QtWidgets.QLineEdit):

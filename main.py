@@ -31,13 +31,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
         self.setupUi(self)
-        # set and lock window size
+        # initialize window and widgets
         self.setFixedWidth(371)
         self.setMinimumHeight(141)
-        self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        # self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         self.setupLists()
         self.exists = []
-        self.lineEdit
 
     def resizeEvent(self, event):  # overload resize
         height = self.height()-60
@@ -64,16 +63,23 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         item.setText(_translate("MainWindow", "Departure"))
         self.list_dept.addItem(item)
 
-    def addFlight(self):
-        callsign = str(self.lineEdit.text()).upper().strip()
-        if callsign and callsign not in self.exists:
+    def addFlight(self, callsign=''):
+        if not callsign:
+            callsign = self.lineEdit.text()
+            if callsign and callsign not in self.exists:
+                item = QtWidgets.QListWidgetItem()
+                item.setText(callsign)
+                item.setBackground(brush_back_default)
+                item.setForeground(brush_fore_default)
+                self.list_pend.addItem(item)
+                self.exists.append(callsign)
+            self.lineEdit.clear()
+        else:
             item = QtWidgets.QListWidgetItem()
             item.setText(callsign)
             item.setBackground(brush_back_default)
             item.setForeground(brush_fore_default)
             self.list_pend.addItem(item)
-            self.exists.append(callsign)
-        self.lineEdit.clear()
 
     def resetLists(self):
         self.list_pend.clear()
