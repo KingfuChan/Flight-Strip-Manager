@@ -2,11 +2,26 @@ import re
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+_translate = QtCore.QCoreApplication.translate
+
+# brushes
 brush_back_default = QtGui.QBrush(QtGui.QColor(255, 255, 255))
 brush_back_default.setStyle(QtCore.Qt.NoBrush)
 
+brush_back_changed = QtGui.QBrush(QtGui.QColor(0, 170, 0))
+brush_back_changed.setStyle(QtCore.Qt.SolidPattern)
+
 brush_fore_default = QtGui.QBrush(QtGui.QColor(0, 0, 0))
 brush_fore_default.setStyle(QtCore.Qt.NoBrush)
+
+brush_fore_changed = QtGui.QBrush(QtGui.QColor(255, 255, 255))
+brush_fore_changed.setStyle(QtCore.Qt.NoBrush)
+
+brush_back_title = QtGui.QBrush(QtGui.QColor(0, 0, 0))
+brush_back_title.setStyle(QtCore.Qt.SolidPattern)
+
+brush_fore_title = QtGui.QBrush(QtGui.QColor(255, 255, 255))
+brush_fore_title.setStyle(QtCore.Qt.NoBrush)
 
 
 class CustomListWidget(QtWidgets.QListWidget):
@@ -17,31 +32,24 @@ class CustomListWidget(QtWidgets.QListWidget):
 
     def dropEvent(self, event):
         row = self.currentRow()
-        print(row)
         # scan list before dropped
         before = [self.item(i).text() for i in range(self.count())]
         super(CustomListWidget, self).dropEvent(event)
-        print(self.currentRow())
         # scan list after dropped
         after = [self.item(i).text() for i in range(self.count())]
         # find difference
         i = 0
-        while i < len(before):
-            if before[i] == after[i]:
-                i += 1
-                continue
-            else:
-                if sorted(before) != sorted(after):
-                    # drag&drop in different list, add to bottom
-                    temp = self.takeItem(i)
-                    temp.setBackground(brush_back_default)
-                    temp.setForeground(brush_fore_default)
-                    self.addItem(temp)
-                elif i == 0:  
-                    # drag&drop in same list, drop to top
-                    temp = self.takeItem(i)
-                    self.insertItem(row, temp)
-                break
+        if sorted(before) == sorted(after):  # drag&drop in same list
+            if before[0] != after[0]:
+                temp = self.takeItem(0)
+                self.insertItem(row, temp)
+        else:  # drag&drop between different list
+            while i < len(before) and before[i] == after[i]:
+                i += 1  # locate difference
+            temp = self.takeItem(i)
+            temp.setBackground(brush_back_default)
+            temp.setForeground(brush_fore_default)
+            self.addItem(temp)
 
     def enterEvent(self, event):  # clears all selections to beautify
         super(CustomListWidget, self).enterEvent(event)
@@ -51,9 +59,26 @@ class CustomListWidget(QtWidgets.QListWidget):
         row = self.row(self.itemAt(pos))
         if row <= 0:  # clicked on title
             return
+
+        # calculate sequence
+        seq = 1
+        for r in range(1, row):
+            if self.item(r).background() == brush_back_default:
+                seq += 1
+        if self.item(row).background() == brush_back_changed:
+            seq = 0
+
+        # add menu actions
         popMenu = QtWidgets.QMenu(self)
-        resetAction = QtWidgets.QAction("Reset")
-        deleteAction = QtWidgets.QAction("Delete")
+        seqAction = QtWidgets.QAction()
+        seqAction.setText(_translate("MainWindow", f"Seq: {seq}"))
+        seqAction.setEnabled(False)
+        resetAction = QtWidgets.QAction()
+        resetAction.setText(_translate("MainWindow", "Reset"))
+        deleteAction = QtWidgets.QAction()
+        deleteAction.setText(_translate("MainWindow", "Delete"))
+        popMenu.addAction(seqAction)
+        popMenu.addSeparator()
         popMenu.addAction(resetAction)
         popMenu.addAction(deleteAction)
         action = popMenu.exec_(QtGui.QCursor.pos())

@@ -1,29 +1,20 @@
 import sys
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 
-from form import Ui_MainWindow
+from form import *
+
+about_info = """Flight Stirp Manager by Kingfu Chan
+
+For updates and instructions please visit
+https://github.com/KingfuChan/Flight-Strip-Manager
+
+Application built with Python(v3.6.6) and PyQt5(v5.14.1), under the license of GNU General Public License v2.0.
+For non-commercial use only.
+"""
 
 _translate = QtCore.QCoreApplication.translate
-
-brush_back_default = QtGui.QBrush(QtGui.QColor(255, 255, 255))
-brush_back_default.setStyle(QtCore.Qt.NoBrush)
-
-brush_back_changed = QtGui.QBrush(QtGui.QColor(0, 170, 0))
-brush_back_changed.setStyle(QtCore.Qt.SolidPattern)
-
-brush_fore_default = QtGui.QBrush(QtGui.QColor(0, 0, 0))
-brush_fore_default.setStyle(QtCore.Qt.NoBrush)
-
-brush_fore_changed = QtGui.QBrush(QtGui.QColor(255, 255, 255))
-brush_fore_changed.setStyle(QtCore.Qt.NoBrush)
-
-brush_back_title = QtGui.QBrush(QtGui.QColor(0, 0, 0))
-brush_back_title.setStyle(QtCore.Qt.SolidPattern)
-
-brush_fore_title = QtGui.QBrush(QtGui.QColor(255, 255, 255))
-brush_fore_title.setStyle(QtCore.Qt.NoBrush)
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -34,19 +25,73 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # initialize window and widgets
         self.setFixedWidth(371)
         self.setMinimumHeight(167)
-        # self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         self.setupLists()
+        self.actionOpac_Curr.setText(_translate(
+            "MainWindow", f"Current: 100%"))
         self.exists = []
+        self.count_total = 0
+        self.count_depart = 0
+
+    # overload events
 
     def resizeEvent(self, event):  # overload resize
-        height = self.height()-86
+        height = self.height()-self.menuBar.height()-self.list_dept.y()-10
         self.list_pend.setFixedHeight(height)
         self.list_push.setFixedHeight(height)
         self.list_dept.setFixedHeight(height)
 
+    def closeEvent(self, event):  # confirm on exit
+        confirm = QMessageBox.question(
+            self, self.windowTitle(),
+            _translate("MainWindow", "Are you sure to exit?"),
+            QMessageBox.Ok | QMessageBox.Cancel)
+        if confirm == QMessageBox.Ok:
+            event.accept()
+        else:
+            event.ignore()
+
     # custom functions below
-    def clickMenu(self):
-        pass
+
+    def clickMenu(self, action):
+        if action == self.actionExit:
+            self.close()
+        elif action == self.actionReset:
+            self.resetLists()
+        elif action == self.actionAbout:
+            _about = QMessageBox.about(self, self.windowTitle(), about_info)
+        elif action == self.actionStatistics:
+            txt1 = _translate(
+                "MainWindow", f"{len(self.exists)}\tflights operating.")
+            txt2 = _translate(
+                "MainWindow", f"{self.count_depart}\tflights departed.")
+            txt3 = _translate(
+                "MainWindow", f"{self.count_total}\tflights in total.")
+            stat = '\n'.join((txt1, txt2, txt3))
+            QMessageBox.information(self, self.windowTitle(), stat)
+        elif action == self.actionOpac_Incr:
+            opac = self.windowOpacity() + 0.10
+            opac = round(opac, 1) if opac <= 1.00 else 1.00
+            self.setWindowOpacity(opac)
+            self.actionOpac_Curr.setText(_translate(
+                "MainWindow", f"Current: {round(opac*100)}%"))
+        elif action == self.actionOpac_Decr:
+            opac = self.windowOpacity() - 0.10
+            opac = round(opac, 1) if opac >= 0.10 else 0.10
+            self.setWindowOpacity(opac)
+            self.actionOpac_Curr.setText(_translate(
+                "MainWindow", f"Current: {round(opac*100)}%"))
+        elif action == self.actionOpac_Rest:
+            self.setWindowOpacity(1.00)
+            self.actionOpac_Curr.setText(
+                _translate("MainWindow", f"Current: 100%"))
+        elif action == self.actionStay_on_top:
+            if self.actionStay_on_top.isChecked():
+                self.setWindowFlags(self.windowFlags() |
+                                    QtCore.Qt.WindowStaysOnTopHint)
+            else:
+                self.setWindowFlags(self.windowFlags() & ~
+                                    QtCore.Qt.WindowStaysOnTopHint)
+            self.show()
 
     def setupLists(self):
         item_title = QtWidgets.QListWidgetItem()
@@ -85,10 +130,20 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.list_pend.addItem(item)
 
     def resetLists(self):
+        confirm = QMessageBox.question(
+            self, self.windowTitle(),
+            _translate("MainWindow", "Are you sure to reset all lists?"),
+            QMessageBox.Ok | QMessageBox.Cancel)
+        if confirm != QMessageBox.Ok:
+            return
         self.list_pend.clear()
         self.list_push.clear()
         self.list_dept.clear()
         self.setupLists()  # refill titles
+        # clear stats
+        self.exists = []
+        self.count_total = 0
+        self.count_depart = 0
 
     def setStatusClr(self, item):  # switch status
         if item.background() == brush_back_default:
@@ -103,7 +158,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             item.setBackground(brush_back_changed)
             item.setForeground(brush_fore_changed)
         elif item.background() == brush_back_changed:
+            self.exists.remove(item.text())
             _delete = self.list_dept.takeItem(self.list_dept.row(item))
+            self.count_depart += 1
 
 
 if __name__ == "__main__":

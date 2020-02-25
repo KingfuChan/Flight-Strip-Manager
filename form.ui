@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>745</width>
+    <width>744</width>
     <height>662</height>
    </rect>
   </property>
@@ -182,7 +182,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>745</width>
+     <width>744</width>
      <height>26</height>
     </rect>
    </property>
@@ -190,23 +190,27 @@
     <property name="title">
      <string>Menu</string>
     </property>
-    <addaction name="actionSet_opacity"/>
+    <widget class="QMenu" name="menuSet_opacity">
+     <property name="title">
+      <string>Set opacity</string>
+     </property>
+     <addaction name="actionOpac_Curr"/>
+     <addaction name="separator"/>
+     <addaction name="actionOpac_Incr"/>
+     <addaction name="actionOpac_Decr"/>
+     <addaction name="actionOpac_Rest"/>
+    </widget>
+    <addaction name="menuSet_opacity"/>
     <addaction name="actionStay_on_top"/>
     <addaction name="separator"/>
-    <addaction name="actionFlight_handled"/>
-    <addaction name="actionFlights_departed_2"/>
-    <addaction name="separator"/>
+    <addaction name="actionStatistics"/>
     <addaction name="actionAbout"/>
     <addaction name="separator"/>
+    <addaction name="actionReset"/>
     <addaction name="actionExit"/>
    </widget>
    <addaction name="menuSettings"/>
   </widget>
-  <action name="actionSet_opacity">
-   <property name="text">
-    <string>Set opacity</string>
-   </property>
-  </action>
   <action name="actionStay_on_top">
    <property name="checkable">
     <bool>true</bool>
@@ -214,30 +218,13 @@
    <property name="text">
     <string>Stay on top</string>
    </property>
-  </action>
-  <action name="actionFlights_handled">
-   <property name="text">
-    <string>Flights handled</string>
+   <property name="shortcut">
+    <string>Alt+Return</string>
    </property>
   </action>
-  <action name="actionFlights_departed">
+  <action name="actionStatistics">
    <property name="text">
-    <string>Flights departed</string>
-   </property>
-  </action>
-  <action name="actionInfo">
-   <property name="text">
-    <string>Info</string>
-   </property>
-  </action>
-  <action name="actionFlight_handled">
-   <property name="text">
-    <string>Flights handled</string>
-   </property>
-  </action>
-  <action name="actionFlights_departed_2">
-   <property name="text">
-    <string>Flights departed</string>
+    <string>Statistics</string>
    </property>
   </action>
   <action name="actionAbout">
@@ -248,6 +235,43 @@
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionOpac_Incr">
+   <property name="text">
+    <string>Increase</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+=</string>
+   </property>
+  </action>
+  <action name="actionOpac_Decr">
+   <property name="text">
+    <string>Decrease</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+-</string>
+   </property>
+  </action>
+  <action name="actionOpac_Rest">
+   <property name="text">
+    <string>Reset</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+Backspace</string>
+   </property>
+  </action>
+  <action name="actionReset">
+   <property name="text">
+    <string>Reset lists</string>
+   </property>
+  </action>
+  <action name="actionOpac_Curr">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Current:</string>
    </property>
   </action>
  </widget>
