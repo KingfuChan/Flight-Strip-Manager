@@ -12,3 +12,4 @@ build/build/PYZ-00.toc
 build/build/warn-build.txt
 build/build/xref-build.html
 ui2py.bat
+__pycache__/mainwindow.cpython-36.pyc

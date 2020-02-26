@@ -3,7 +3,7 @@ import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 
-from form import *
+from mainwindow import *
 
 about_info = """Flight Stirp Manager by Kingfu Chan
 
